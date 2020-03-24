@@ -1,42 +1,16 @@
-package com.java.spring.hibernate.transaction;
+package com.java.spring.hibernate.dao;
 
 import com.java.spring.hibernate.exceptions.LowBalance;
 import com.java.spring.hibernate.model.Branch;
 import com.java.spring.hibernate.model.Customer;
 import com.java.spring.hibernate.util.HibernateUtil;
 import org.hibernate.Session;
+
 import java.util.List;
 
-public class Transactions {
-    public String addBranch(String branchName){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-
-        Branch branch = new Branch();
-        branch.setBranchName(branchName);
-        session.persist(branch);
-        session.getTransaction().commit();
-        session.close();
-        return "Branch has been successfully added  " + branch;
-    }
-
-    public String removeBranch(String id){
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        Branch branch = (Branch) session.get(Branch.class,id);
-
-        if(branch != null) {
-            session.delete(branch);
-            session.getTransaction().commit();
-            session.close();
-            return "Branch with id : " + id + " has been successfully deleted ";
-        }
-        session.close();
-        return "Error !!!  404 No Branch found with this Id !!!";
-    }
-
+public class CustomerDao {
     public String addCustomer(Customer customer , String branchCode){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = getSession();
         session.beginTransaction();
 
         Branch branch = (Branch) session.get( Branch.class, branchCode);
@@ -52,7 +26,7 @@ public class Transactions {
     }
 
     public String removeCustomer(String id){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = getSession();
         session.beginTransaction();
         Customer customer = (Customer) session.get(Customer.class,id);
 
@@ -66,8 +40,12 @@ public class Transactions {
         return "Error !!!  404 No Customer found with this Id !!!";
     }
 
+    private Session getSession() {
+        return HibernateUtil.getSessionFactory().openSession();
+    }
+
     public String creditBalance(int id, double balance){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = getSession();
         session.beginTransaction();
         Customer customer = (Customer) session.get(Customer.class,id);
         customer.setBalance(customer.getBalance()+balance);
@@ -78,7 +56,7 @@ public class Transactions {
     }
 
     public String debitBalance(int id, double balance){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = getSession();
         session.beginTransaction();
         Customer customer = (Customer) session.get(Customer.class,id);
         if(customer == null) {
@@ -94,27 +72,16 @@ public class Transactions {
         session.close();
         return "Balance has been credited : " +customer;
     }
-
-    public List<Branch> showBranches(){
-
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        session.beginTransaction();
-        List<Branch> branches= session.createQuery("from Branch ").list();
-        session.getTransaction().commit();
-        session.close();
-        return branches;
-    }
-
     public List<Customer> showCustomers(){
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = getSession();
         session.beginTransaction();
         List<Customer> customers= session.createQuery("from Customer ").list();
         session.getTransaction().commit();
         session.close();
         return customers;
     }
-    public String updateEmployee(int id, Customer customer) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public String updateCustomer(int id, Customer customer) {
+        Session session = getSession();
         session.beginTransaction();
         Customer oldCustomer = (Customer) session.get(Customer.class,id);
         oldCustomer.setBalance(customer.getBalance());

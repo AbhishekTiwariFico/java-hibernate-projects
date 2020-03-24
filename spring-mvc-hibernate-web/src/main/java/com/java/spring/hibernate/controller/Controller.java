@@ -1,17 +1,20 @@
 package com.java.spring.hibernate.controller;
 
+import com.java.spring.hibernate.dao.BranchDao;
+import com.java.spring.hibernate.dao.CustomerDao;
 import com.java.spring.hibernate.model.Customer;
-import com.java.spring.hibernate.transaction.Transactions;
 
 import java.util.Scanner;
 
 public class Controller {
     private int option;
-    private Transactions transactions;
+    private CustomerDao customerDao;
+    private BranchDao branchDao;
     private Scanner sc = new Scanner(System.in);
 
     public Controller() {
-        transactions = new Transactions();
+        customerDao = new CustomerDao();
+        branchDao = new BranchDao();
     }
 
     public void performOperations(){
@@ -22,31 +25,31 @@ public class Controller {
             switch (option) {
 
                 case 1:
-                       System.out.println(transactions.addBranch(takeBranch()));
+                       System.out.println(branchDao.addBranch(takeBranch()));
                        break;
                 case 2:
-                      System.out.println(transactions.removeBranch(takeId()));
+                      System.out.println(branchDao.removeBranch(takeId()));
                       break;
                 case 3:
-                     System.out.println( transactions.addCustomer(createCustomer(),branchID()));
+                     System.out.println( customerDao.addCustomer(createCustomer(),branchID()));
                       break;
                 case 4:
-                       System.out.println(transactions.removeCustomer(takeId()));
+                       System.out.println(customerDao.removeCustomer(takeId()));
                        break;
                 case 5:
-                        System.out.println(transactions.debitBalance(Integer.parseInt(takeId()),takeBalance()));
+                        System.out.println(customerDao.debitBalance(Integer.parseInt(takeId()),takeBalance()));
                         break;
                 case 6:
-                       System.out.println(transactions.creditBalance(Integer.parseInt(takeId()),takeBalance()));
+                       System.out.println(customerDao.creditBalance(Integer.parseInt(takeId()),takeBalance()));
                        break;
                 case 7:
-                       System.out.println(transactions.showCustomers());
+                       System.out.println(customerDao.showCustomers());
                        break;
                 case 8:
-                       System.out.println(transactions.showBranches());
+                       System.out.println(branchDao.showBranches());
                        break;
                 case 9:
-                      System.out.println(transactions.updateEmployee(Integer.parseInt(takeId()),updateCustomer()));
+                      System.out.println(customerDao.updateCustomer(Integer.parseInt(takeId()),updateCustomer()));
                       break;
                 default:
                         return;

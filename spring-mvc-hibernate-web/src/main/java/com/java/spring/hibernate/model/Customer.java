@@ -19,7 +19,7 @@ public class Customer {
     @Column(name="accountID")
     private String accountID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="branchCode")
     private Branch branch;
 
@@ -51,9 +51,9 @@ public class Customer {
         return accountID;
     }
 
-    public void setAccountID(String accountID) {
+    public void setAccountID(String  branchCode) {
         Random random = new Random();
-        this.accountID = accountID + String.format("%04d", random.nextInt(10000));;
+        this.accountID = branchCode + String.format("%04d", random.nextInt(10000));;
     }
 
     public Branch getBranch() {
